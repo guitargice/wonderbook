@@ -1,4 +1,4 @@
-import { hasSupabaseConfig } from "@/lib/config/env";
+import { hasSupabaseConfig } from "@/lib/config/server-env";
 import { getSupabaseServerClient } from "@/lib/db/supabaseServer";
 
 type PersistDrawingInput = {
@@ -45,7 +45,7 @@ export const mediaStorage = {
     if (!parsed) {
       throw new Error("Drawing export must be a valid image data URI.");
     }
-    if (!hasSupabaseConfig) {
+    if (!hasSupabaseConfig()) {
       throw new Error(
         "Public drawing URL required: configure Supabase env vars and make the `drawings` bucket public.",
       );
@@ -100,7 +100,7 @@ export const mediaStorage = {
     pageId: string;
     videoBytes: Uint8Array;
   }): Promise<PersistAnimationResult> {
-    if (!hasSupabaseConfig) {
+    if (!hasSupabaseConfig()) {
       throw new Error("Supabase required to persist generated video.");
     }
     const supabase = getSupabaseServerClient();
@@ -127,7 +127,7 @@ export const mediaStorage = {
   },
 
   async persistGeneratedAnimation(input: PersistAnimationInput): Promise<PersistAnimationResult> {
-    if (!hasSupabaseConfig) {
+    if (!hasSupabaseConfig()) {
       return { generatedAnimationUrl: input.providerAnimationUrl };
     }
     const supabase = getSupabaseServerClient();

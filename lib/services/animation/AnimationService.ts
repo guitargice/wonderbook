@@ -1,4 +1,4 @@
-import { env } from "@/lib/config/env";
+import { getServerEnv } from "@/lib/config/server-env";
 import { buildAnimationPrompt } from "@/lib/services/story/prompts/animationPrompt";
 import { GrokImagineProvider } from "@/lib/services/animation/providers/GrokImagineProvider";
 import { MockAnimationProvider } from "@/lib/services/animation/providers/MockAnimationProvider";
@@ -6,6 +6,7 @@ import type { AnimationProvider } from "@/lib/services/animation/providers/Anima
 import type { StoryPage, StorySession } from "@/lib/types/domain";
 
 const getProvider = (): AnimationProvider => {
+  const env = getServerEnv();
   if (env.mockAnimationMode || !(env.grokImagineApiKey || env.xaiApiKey)) {
     return new MockAnimationProvider();
   }

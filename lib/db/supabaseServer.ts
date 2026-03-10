@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
-import { assertEnvForSupabase, hasSupabaseConfig } from "@/lib/config/env";
+import { assertEnvForSupabase, hasSupabaseConfig } from "@/lib/config/server-env";
 
 export const getSupabaseServerClient = () => {
-  if (!hasSupabaseConfig) {
+  if (!hasSupabaseConfig()) {
     return null;
   }
 

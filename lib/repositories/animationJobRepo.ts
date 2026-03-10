@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/db/supabaseServer";
-import { hasSupabaseConfig } from "@/lib/config/env";
+import { hasSupabaseConfig } from "@/lib/config/server-env";
 import { memoryDb } from "@/lib/repositories/memoryStore";
 import type { AnimationJob } from "@/lib/types/domain";
 
@@ -8,7 +8,7 @@ const TABLE = "animation_jobs";
 export const animationJobRepo = {
   async insert(job: AnimationJob): Promise<void> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const { error } = await supabase.from(TABLE).insert({
         id: job.id,
         page_id: job.pageId,
@@ -29,7 +29,7 @@ export const animationJobRepo = {
 
   async update(jobId: string, patch: Partial<AnimationJob>): Promise<void> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const payload: Record<string, unknown> = {};
       if (patch.status) payload.status = patch.status;
       if (patch.requestPayload !== undefined) payload.request_payload = patch.requestPayload;
@@ -50,7 +50,7 @@ export const animationJobRepo = {
 
   async getById(jobId: string): Promise<AnimationJob | null> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const { data, error } = await supabase.from(TABLE).select("*").eq("id", jobId).single();
       if (error || !data) return null;
       return {

@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/db/supabaseServer";
-import { hasSupabaseConfig } from "@/lib/config/env";
+import { hasSupabaseConfig } from "@/lib/config/server-env";
 import { memoryDb } from "@/lib/repositories/memoryStore";
 import type { StoryPage } from "@/lib/types/domain";
 
@@ -8,7 +8,7 @@ const TABLE = "story_pages";
 export const storyPageRepo = {
   async insert(page: StoryPage): Promise<void> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const { error } = await supabase.from(TABLE).insert({
         id: page.id,
         story_session_id: page.storySessionId,
@@ -29,7 +29,7 @@ export const storyPageRepo = {
 
   async update(pageId: string, patch: Partial<StoryPage>): Promise<void> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const payload: Record<string, unknown> = {};
       if (patch.drawingImageUrl !== undefined) payload.drawing_image_url = patch.drawingImageUrl;
       if (patch.generatedAnimationUrl !== undefined) {
@@ -53,7 +53,7 @@ export const storyPageRepo = {
 
   async getById(pageId: string): Promise<StoryPage | null> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const { data, error } = await supabase.from(TABLE).select("*").eq("id", pageId).single();
       if (error || !data) return null;
       return {

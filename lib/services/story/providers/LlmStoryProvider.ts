@@ -1,4 +1,4 @@
-import { env } from "@/lib/config/env";
+import { getServerEnv } from "@/lib/config/server-env";
 import { buildInitialOutlinePrompt } from "@/lib/services/story/prompts/initialOutlinePrompt";
 import { buildNextPagePrompt } from "@/lib/services/story/prompts/nextPagePrompt";
 import type { SetupInput, StoryOutline, StoryPage } from "@/lib/types/domain";
@@ -51,6 +51,7 @@ export class LlmStoryProvider implements StoryProvider {
   }
 
   private async callModel(prompt: string): Promise<string> {
+    const env = getServerEnv();
     if (!env.llmApiKey) {
       throw new Error("LLM_API_KEY missing");
     }

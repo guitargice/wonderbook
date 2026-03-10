@@ -1,4 +1,4 @@
-import { env } from "@/lib/config/env";
+import { getServerEnv } from "@/lib/config/server-env";
 import { LlmStoryProvider } from "@/lib/services/story/providers/LlmStoryProvider";
 import { MockStoryProvider } from "@/lib/services/story/providers/MockStoryProvider";
 import type {
@@ -17,6 +17,7 @@ const pageCountFromLength = (length: StoryLength): number => {
 };
 
 const providerFromEnv = (): StoryProvider => {
+  const env = getServerEnv();
   if (env.mockStoryMode || !env.llmApiKey) {
     return new MockStoryProvider();
   }

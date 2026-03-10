@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/db/supabaseServer";
-import { hasSupabaseConfig } from "@/lib/config/env";
+import { hasSupabaseConfig } from "@/lib/config/server-env";
 import { getAggregateFromMemory, memoryDb } from "@/lib/repositories/memoryStore";
 import type { SessionAggregate, StorySession } from "@/lib/types/domain";
 
@@ -8,7 +8,7 @@ const TABLE = "story_sessions";
 export const storySessionRepo = {
   async insert(session: StorySession): Promise<void> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const { error } = await supabase.from(TABLE).insert({
         id: session.id,
         created_at: session.createdAt,
@@ -32,7 +32,7 @@ export const storySessionRepo = {
 
   async update(sessionId: string, patch: Partial<StorySession>): Promise<void> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const payload: Record<string, unknown> = {};
       if (patch.updatedAt) payload.updated_at = patch.updatedAt;
       if (patch.currentPageNumber !== undefined) payload.current_page_number = patch.currentPageNumber;
@@ -52,7 +52,7 @@ export const storySessionRepo = {
 
   async getAggregate(sessionId: string): Promise<SessionAggregate | null> {
     const supabase = getSupabaseServerClient();
-    if (hasSupabaseConfig && supabase) {
+    if (hasSupabaseConfig() && supabase) {
       const sessionResult = await supabase.from(TABLE).select("*").eq("id", sessionId).single();
       if (sessionResult.error || !sessionResult.data) {
         return null;

@@ -1,6 +1,6 @@
 import { createXai } from "@ai-sdk/xai";
 import { experimental_generateVideo as generateVideo } from "ai";
-import { env } from "@/lib/config/env";
+import { getServerEnv } from "@/lib/config/server-env";
 import type {
   AnimationJobStatusResult,
   AnimationProvider,
@@ -12,6 +12,7 @@ export class GrokImagineProvider implements AnimationProvider {
   readonly name = "grok-imagine";
 
   async createJob(input: CreateAnimationJobInput): Promise<CreateAnimationJobResult> {
+    const env = getServerEnv();
     const apiKey = env.xaiApiKey || env.grokImagineApiKey;
     if (!apiKey) {
       throw new Error("XAI_API_KEY is not configured.");
